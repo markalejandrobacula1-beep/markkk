@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mark & Elena 💖 7 Months</title>
+<style>
+body {
+  margin:0;
+  height:100vh;
+  background: radial-gradient(circle at top, #ff4d6d, #ff9a9e, #ffd1dc);
+  font-family:'Poppins', Arial, sans-serif;
+  overflow:hidden;
+  position:relative;
+}
+.card {
+  background: rgba(255,255,255,0.95);
+  border-radius:25px;
+  padding:30px;
+  width:90%;
+  max-width:400px;
+  text-align:center;
+  box-shadow:0 15px 35px rgba(0,0,0,0.25);
+  position:relative;
+  z-index:5;
+  transition:all 0.3s ease;
+}
+h1{color:#ff3366;margin:0;}
+h2{color:#ff6699;margin:5px 0 15px;}
+p{color:#333;font-size:18px;}
+input{
+  padding:12px;
+  width:80%;
+  border-radius:12px;
+  border:1px solid #ccc;
+  font-size:16px;
+}
+button{
+  padding:12px 20px;
+  margin-top:15px;
+  border-radius:12px;
+  border:none;
+  cursor:pointer;
+  background:#ff3366;
+  color:white;
+  font-size:16px;
+  transition:all 0.2s ease;
+}
+.hidden{display:none;}
+.no{
+  background:#ddd;
+  color:#333;
+  position:absolute;
+}
+.heart{
+  position:absolute;
+  font-size:24px;
+  animation:float 4s linear infinite;
+}
+@keyframes float{
+  from{transform:translateY(100vh);opacity:1;}
+  to{transform:translateY(-10vh);opacity:0;}
+}
+.confetti{
+  position:absolute;
+  font-size:30px;
+  animation:explode 1.2s ease-out forwards;
+}
+@keyframes explode{
+  0%{transform:scale(0);opacity:1;}
+  100%{transform:scale(3);opacity:0;}
+}
+.cat{
+  position:absolute;
+  width:80px;
+  max-width:25vw;
+  transition:all 0.3s ease;
+  z-index:10;
+}
+#countdown{font-size:20px;color:#ff3366;margin-top:10px;}
+#letter{font-size:18px;color:#ff3366;line-height:1.5;text-align:center;margin-top:15px;}
+.fullscreen-bg{
+  position:fixed;
+  top:0;left:0;
+  width:100%;
+  height:100%;
+  background: radial-gradient(circle at top, #ff4d6d, #ff9a9e, #ffd1dc);
+  z-index:20;
+  overflow:hidden;
+}
+</style>
+</head>
+<body>
+
+<audio id="music" loop>
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_9c5c2f6f55.mp3" type="audio/mpeg">
+</audio>
+
+<!-- PASSWORD LOCK -->
+<div class="card" id="lock">
+  <h1>🔒 Private Page</h1>
+  <p>Only for Elena 💕</p>
+  <input type="password" id="password" placeholder="Enter password">
+  <button onclick="unlock()">Unlock 💖</button>
+  <p id="error" style="color:red; display:none;">Oops! Wrong password 😜 Try again!</p>
+</div>
+
+<!-- MAIN VALENTINE PAGE -->
+<div class="card hidden" id="main">
+  <h1>Hi Elena 😘</h1>
+  <h2>🎉 7 Months Together! 🎉</h2>
+  <p>Valentine’s Day is almost here… 💕</p>
+  <div id="countdown"></div>
+  <p>Will you be my Valentine? 💖</p>
+  <button id="yesBtn" onclick="yes()">YES 💘</button>
+  <button class="no" id="noBtn">NO 😈</button>
+  <p style="margin-top:15px;">From: Mark ❤️ To: Elena</p>
+</div>
+
+<!-- FINAL CELEBRATION -->
+<div class="card hidden" id="final">
+  <h1>Yayyy you said YES! See you on Valentine's Day!!! 🎆</h1>
+  <button onclick="viewLetter()">View Message 💌</button>
+  <div id="letter" class="hidden">
+    Dear Elena, 💌<br><br>
+    Every moment with you makes my heart smile. These 7 months together have been the happiest of my life.  
+    On this Valentine’s Day, I just want you to know how much I love you and how special you are to me.  
+    Thank you for being my everything. 💕<br><br>
+    Love always,<br>
+    Mark ❤️
+  </div>
+</div>
+
+<script>
+const correctPassword = "07142025";
+const music = document.getElementById("music");
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const main = document.getElementById("main");
+const final = document.getElementById("final");
+
+// Countdown
+const valentinesDate = new Date("February 14, 2026 00:00:00").getTime();
+const countdownEl = document.getElementById("countdown");
+setInterval(() => {
+  const now = new Date().getTime();
+  const diff = valentinesDate - now;
+  const d = Math.floor(diff/(1000*60*60*24));
+  const h = Math.floor((diff/(1000*60*60))%24);
+  const m = Math.floor((diff/(1000*60))%60);
+  const s = Math.floor((diff/1000)%60);
+  countdownEl.innerHTML = `⏳ ${d}d ${h}h ${m}m ${s}s`;
+}, 1000);
+
+function unlock() {
+  if(document.getElementById("password").value === correctPassword){
+    document.getElementById("lock").classList.add("hidden");
+    main.classList.remove("hidden");
+    music.play();
+  } else { 
+    document.getElementById("error").style.display = "block"; 
+  }
+}
+
+// NO button infinite chaos & YES grows
+let yesScale = 1;
+noBtn.addEventListener("click", ()=>{
+  // Move NO randomly
+  noBtn.style.left = Math.random()*70 + "%";
+  noBtn.style.top = Math.random()*70 + "%";
+
+  // Show crying cat GIF
+  showNoCat();
+
+  // Grow YES button
+  yesScale += 0.2;
+  yesBtn.style.transform = `scale(${yesScale})`;
+});
+
+function showNoCat(){
+  const cat = document.createElement("img");
+  cat.src = "https://media.tenor.com/Z8eRzWjXyz0AAAAM/blubbering-sad-white-cat.gif";
+  cat.className = "cat";
+  cat.style.left = Math.random()*80 + "%";
+  cat.style.top = Math.random()*80 + "%";
+  document.body.appendChild(cat);
+  setTimeout(()=>cat.remove(),3000);
+}
+
+// YES button celebration
+function yes(){
+  main.classList.add("hidden");
+  final.classList.remove("hidden");
+  spawnHappyCats();
+  spawnHearts();
+  spawnConfetti();
+}
+
+function viewLetter(){
+  document.getElementById("letter").classList.remove("hidden");
+}
+
+// Floating happy cats from YES button
+function spawnHappyCats(){
+  for(let i=0;i<10;i++){
+    setTimeout(()=>{
+      const cat = document.createElement("img");
+      cat.src = "https://media.tenor.com/CLfOevxdw_wAAAAM/kiss-cute.gif";
+      cat.className="cat";
+      cat.style.left=(yesBtn.offsetLeft + yesBtn.offsetWidth/2)+"px";
+      cat.style.top=(yesBtn.offsetTop + yesBtn.offsetHeight/2)+"px";
+      document.body.appendChild(cat);
+      let top = yesBtn.offsetTop + yesBtn.offsetHeight/2;
+      const id = setInterval(()=>{
+        top-=2;
+        cat.style.top = top + "px";
+        if(top<-100){clearInterval(id);cat.remove();}
+      },20);
+    },i*200);
+  }
+}
+
+// Hearts floating
+function spawnHearts(){
+  for(let i=0;i<20;i++){
+    setTimeout(()=>{
+      const h = document.createElement("div");
+      h.className="heart";
+      h.textContent="💖";
+      h.style.left=Math.random()*100+"vw";
+      document.body.appendChild(h);
+      setTimeout(()=>h.remove(),4000);
+    }, i*150);
+  }
+}
+
+// Confetti animation
+function spawnConfetti(){
+  for(let i=0;i<30;i++){
+    setTimeout(()=>{
+      const c = document.createElement("div");
+      c.className="confetti";
+      c.textContent="🎊";
+      c.style.left=Math.random()*100+"vw";
+      c.style.top=Math.random()*100+"vh";
+      document.body.appendChild(c);
+      setTimeout(()=>c.remove(),2000);
+    },i*100);
+  }
+}
+</script>
+
+</body>
+</html>
